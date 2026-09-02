@@ -2,7 +2,7 @@
 
 > 最后核实日期：2026-09-02
 > 优先级：P0 = 高频必考，优先展开；P1 = 常考，次优先；P2 = 加分项，有余力再展开。
-> 依据：[01-jd-quant-cpp.md](01-jd-quant-cpp.md)、[02-jd-core-system.md](02-jd-core-system.md)、[04-interview-landscape.md](04-interview-landscape.md) 所引面经与题库。
+> 依据：[01-jd-quant-cpp.md](01-jd-quant-cpp.md)、[02-jd-core-system.md](02-jd-core-system.md)、[04-interview-landscape.md](04-interview-landscape.md)、[05-company-recruit-scan.md](05-company-recruit-scan.md) 所引面经与题库。
 
 ## 1. cpp — C++ 语言与新特性
 
@@ -42,6 +42,7 @@
 | TCP 可靠性机制：重传、滑动窗口、拥塞控制 | P0 | JD「网络原理」 |
 | I/O 多路复用：select/poll/epoll 原理与水平/边缘触发 | P0 | JD「epoll」 |
 | TCP vs UDP 及行情组播场景 | P1 | 行情系统方向 |
+| TCP 粘包与拆包处理 | P1 | 宽德 2026 实习二面真题（§2.6） |
 | 零拷贝：sendfile/splice/mmap | P1 | 核心系统岗 |
 | RDMA / 内核旁路网络 | P2 | 低延迟岗加分 |
 | TLS/HTTPS 与协议设计（RPC、序列化） | P2 | 垒昂面经（RPC 通信） |
@@ -66,11 +67,12 @@
 | 期望值与博弈类问题 | P0 | phantomcodeai Round 7 题型 |
 | 条件概率 / 贝叶斯 | P0 | 同上 |
 | 组合计数（隔板法、鸽笼） | P0 | 同上 |
-| 赌徒破产 / 随机游走 | P1 | 同上 |
-| 几何分布 / 均匀和 / 次序统计量 | P1 | 同上 |
+| 赌徒破产 / 随机游走 | P1 | 同上；天演 2023 笔试真题（1 vs 2 元本金、胜率 2/3 变式） |
+| 几何分布 / 均匀和 / 次序统计量；几何概率（木棍三段） | P1 | 同上；天演真题（木棍裁三段成三角 + 变式） |
 | 经典谜题（100 囚犯、信封悖论等） | P1 | 同上 |
+| 回归的几何与统计性质（最小二乘、均匀撒点） | P1 | 衍复 2023 笔试第一题（§2.5） |
 | 心算训练（两位数乘法、基点换算） | P0 技能 | 同上，accuracy first |
-| 【待补】交易/行情领域知识：订单簿、撮合、订单类型、逆向选择 | P1 | phantomcodeai Round 6；02 号调研 §3 |
-| 【待补】手写代码题：atoi、随机数生成、LeetCode 经典（如 200 岛屿） | P0 | 富途真题、稳博笔试 |
+| 【待补】交易/行情领域知识：订单簿、撮合、订单类型、逆向选择 | P1 | phantomcodeai Round 6；02 号调研 §3；九坤手写订单簿面试真题（§2.7） |
+| 【待补】手写代码题：atoi、随机数生成、LeetCode 经典（如 200 岛屿）、LRU、线程池+并发安全队列、Orderbook | P0 | 富途真题、稳博笔试；世纪前沿/九坤手撕 LRU、宽德线程池 + 并发安全队列、九坤 Orderbook（05 号调研 §6.3） |
 
 > 手写代码题落位说明：算法类真题归 `interview/algorithm/`，语言实现类（atoi、智能指针手写）归 `interview/cpp/`；本表仅作考点追踪。

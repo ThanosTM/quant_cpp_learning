@@ -10,6 +10,7 @@
 | [02-jd-core-system.md](02-jd-core-system.md) | 核心系统开发岗（行情/交易系统）JD 分析 | 2026-09-02 |
 | [03-tech-stack-map.md](03-tech-stack-map.md) | 技术栈考点地图：模块 × 考点 × 优先级（知识点规划总纲） | 2026-09-02 |
 | [04-interview-landscape.md](04-interview-landscape.md) | 笔试面试流程、题型分布与准备计划 | 2026-09-02 |
+| [05-company-recruit-scan.md](05-company-recruit-scan.md) | 八家量化私募（幻方/天演/佳期/世纪前沿/衍复/宽德/九坤/明汯）岗位、校招专项、流程与笔面试真题扫描 | 2026-09-02 |
 
 ## 维护规则
 
