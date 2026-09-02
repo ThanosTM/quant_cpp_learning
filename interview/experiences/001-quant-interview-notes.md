@@ -43,7 +43,7 @@
 
 - [ ] 富途：map vs unordered_map 底层 → 新建 `interview/cpp/002-stl-map-underlying.md`
 - [ ] 富途：手写 atoi（含溢出/非法输入处理）→ 新建 `interview/algo/001-handwritten-atoi.md`
-- [ ] 九坤：智能指针线程安全性 → 并入 `cpp/smart-pointers/` 追问区
+- [x] 九坤：智能指针线程安全性 → 已并入 `cpp/smart-pointers/` 正文 §4.5（2026-09-02）
 - [ ] 垒昂：epoll LT/ET 区别与惊群 → 新建 `interview/system/001-epoll-et-lt-thundering-herd.md`
 - [ ] 垒昂：定时器数据结构设计（时间轮 vs 最小堆）→ 新建 `interview/system/002-timer-design.md`
 - [ ] 稳博：硬币期望类概率题 2 道 → 落入 `knowledge/brainteaser/expected-value/`

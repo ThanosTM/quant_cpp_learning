@@ -33,7 +33,9 @@ Derived::Derived() 进入 → vptr ──→ Derived vtable
 ### 3. 纯虚函数的特殊情况
 
 - 构造 / 析构期间调用纯虚函数：[CppReference](https://en.cppreference.com/w/cpp/language/virtual#During_construction_and_destruction) 明确这是未定义行为（UB）。
+
 - 实际表现：类有纯虚函数却**没有给出定义**时，vtable 对应槽位无有效地址；glibc 下运行时报 `pure virtual method called` 后 `abort()`，是最常见的崩溃现场。
+
 - 若纯虚函数**有定义**（`virtual void f() = 0;` 且类外提供了实现），构造期调用到它会正常执行该定义——这也是「给纯虚函数提供默认实现」这一技巧能成立的原因。
 
 ### 4. 为什么语言这么设计
@@ -75,6 +77,7 @@ int main() { Derived d; }           // 输出: Base::hook
 
 ## 落盘记录
 
-| 日期 | 事件 | 结论 |
-|---|---|---|
+| 日期         | 事件   | 结论          |
+| ---------- | ---- | ----------- |
 | 2026-09-02 | 首次解答 | 正文完成，代码验证通过 |
+

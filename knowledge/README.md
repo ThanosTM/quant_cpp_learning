@@ -22,7 +22,7 @@
 | 知识点 | 模块 | 状态 | 深度 | 追问数 | 最近更新 |
 |---|---|---|---|---|---|
 | [move-semantics 移动语义](cpp/move-semantics/README.md) | cpp | expanded | L2 | 2 | 2026-09-02 |
-| [smart-pointers 智能指针](cpp/smart-pointers/README.md) | cpp | outline | L1 | 0 | 2026-09-02 |
+| [smart-pointers 智能指针](cpp/smart-pointers/README.md) | cpp | expanded | L2 | 0 | 2026-09-02 |
 | [false-sharing 伪共享](low-latency/false-sharing/README.md) | low-latency | expanded | L2 | 2 | 2026-09-02 |
 
 ## 图例与维护说明
