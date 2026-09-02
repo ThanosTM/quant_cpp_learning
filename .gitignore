@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# 编译产物
+build/
+*.o
+*.out
+*.dSYM/
+example
+a.out
+
+# 编辑器
+*.swp
+.idea/
+.vscode/
