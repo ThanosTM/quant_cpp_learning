@@ -2,6 +2,18 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.3.1] - 2026-09-02
+
+### 新增
+
+- `knowledge/cpp/smart-pointers` 追问落盘 4 条（README §7）：删除器零开销与 EBO 机制、手写 `MySharedPtr`（控制块双原子计数 / CAS 提升 / 集体弱份额）、`unique_ptr<T[]>` 用法与 UB 坑、`enable_shared_from_this` 三坑与异步自共享范式。
+
+  - 配套实验文件（均已通过 `g++ -std=c++20 -O2 -Wall` 编译运行验证）：`example-ebo-deleter.cpp`、`example-my-shared-ptr.cpp`、`example-unique-array.cpp`、`example-shared-from-this.cpp`。
+
+### 更新
+
+- `knowledge/cpp/smart-pointers/README.md`：§4.2（EBO 与 `[[no_unique_address]]`、数组特化 UB 警示）、§4.5（自共享三坑与 `owner_before` 鉴别）正文随追问扩写；§5 收录追问衍生实验清单。
+
 ## \[0.3.0] - 2026-09-02
 
 ### 新增
