@@ -43,7 +43,7 @@
 
 | 模块 | 已展开 | 进行中 | 规划知识点数 |
 |---|---|---|---|
-| cpp（C++ 与新特性） | 2（move-semantics、smart-pointers） | 0 | 详见 [knowledge/cpp/README.md](knowledge/cpp/README.md) |
+| cpp（C++ 与新特性） | 3（move-semantics、smart-pointers、object-model） | 0 | 详见 [knowledge/cpp/README.md](knowledge/cpp/README.md) |
 | low-latency（低延迟） | 1（false-sharing） | 0 | 详见 [knowledge/low-latency/README.md](knowledge/low-latency/README.md) |
 | network（网络） | 0 | 0 | 详见 [knowledge/network/README.md](knowledge/network/README.md) |
 | os（操作系统） | 2（context-switch-affinity、virtual-memory-tlb） | 0 | 6（规划，详见 [knowledge/os/README.md](knowledge/os/README.md)） |

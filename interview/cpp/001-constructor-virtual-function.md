@@ -65,15 +65,15 @@ int main() { Derived d; }           // 输出: Base::hook
 
 ## 追问链（面试常见延伸）
 
-1. 为什么基类指针析构要 `virtual ~Base()`？→ 否则 `delete base_ptr` 是 UB；基类有虚函数就该有虚析构（关联：cpp/object-model/）。
+1. 为什么基类指针析构要 `virtual ~Base()`？→ 否则 `delete base_ptr` 是 UB；基类有虚函数就该有虚析构（关联：[cpp/object-model](../../knowledge/cpp/object-model/README.md)）。
 2. Java 在构造函数中调虚函数会发生什么？→ 会调用派生类版本（见 §4），所以 Java 强调构造期不可重写方法。
-3. vptr 什么时候被设置？编译器插入了什么代码？→ 每层构造/析构开头由编译器写入该层 vtable 地址（关联：cpp/object-model/）。
+3. vptr 什么时候被设置？编译器插入了什么代码？→ 每层构造/析构开头由编译器写入该层 vtable 地址（关联：[cpp/object-model](../../knowledge/cpp/object-model/README.md)）。
 4. 怎么在构造期实现多态？→ 两段式初始化 / 工厂 + init / CRTP。
 5. 顺带：构造函数可以是 virtual 吗？→ 不可以，虚机制依赖 vptr，而 vptr 要构造完成后才指向派生层。
 
 ## 关联知识点
 
-- `cpp/object-model/`（vtable/vptr、对象内存布局）——展开后需与本页互链
+- [cpp/object-model](../../knowledge/cpp/object-model/README.md)（vtable/vptr、对象内存布局、多重继承、RTTI）
 
 ## 落盘记录
 

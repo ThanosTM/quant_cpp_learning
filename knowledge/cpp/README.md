@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | 移动语义 / 完美转发 | [move-semantics/](move-semantics/README.md) | expanded | P0 | 九坤面经；HFT 题库 |
 | 智能指针与所有权 | [smart-pointers/](smart-pointers/README.md) | expanded | P0 | HFT 题库 Q10；九坤面经 |
-| 对象模型：vtable/vptr、多重继承、RTTI | object-model/ | planned | P0 | 九坤、富途真题 |
+| 对象模型：vtable/vptr、多重继承、RTTI | [object-model/](object-model/README.md) | expanded | P0 | 九坤、富途真题；真题 001 |
 | STL 容器底层（map/unordered_map/vector） | stl-containers/ | planned | P0 | 富途真题 |
 | RAII 与异常安全 | raii-exception-safety/ | planned | P0 | HFT 题库 Q9/Q18 |
 | const 正确性与关键字细节 | const-and-keywords/ | planned | P1 | 九坤面经 |

@@ -2,6 +2,25 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.6.0] - 2026-11-03
+
+### 新增
+
+- 展开 `knowledge/cpp/object-model`（planned → expanded，L2）：
+
+  - 正文：对象内存布局（对齐、EBO、尾部 padding 复用、standard-layout）、vptr/vtable（Itanium ABI 的 `-1`/`-2` 槽、析构器槽、去虚化）、多重继承（this 调整、thunk、offset-to-top、对象切片）、虚继承、RTTI 与 `dynamic_cast` 成本、量化场景权衡。
+
+  - `example.cpp`：五实验（sizeof/EBO、vptr 与 vtable 槽、多重继承指针调整、虚继承共享子对象、RTTI），已在 Apple M2 Pro / macOS Darwin 25.5（arm64，Apple clang 17）上用 `g++ -std=c++20 -O2 -Wall` 编译运行通过，无警告。
+
+  - 实测结果写入 §5：`sizeof(Multi)=32`（尾部 padding 复用）、Base2 偏移 +16 / offset-to-top -16、`sizeof(Diamond)=48` 等。
+
+### 更新
+
+- `knowledge/README.md`：cpp 模块 1/11 → 3/11（顺带修正原有过期计数），学习进度表新增 object-model。
+- `knowledge/cpp/README.md`：object-model 状态 planned → expanded。
+- 根 `README.md`：cpp 已展开计数更新为 3。
+- `interview/cpp/001`：与 object-model 建立双向互链。
+
 ## \[0.5.0] - 2026-11-03
 
 ### 新增
