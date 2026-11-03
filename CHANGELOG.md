@@ -2,6 +2,22 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.5.0] - 2026-11-03
+
+### 新增
+
+- 展开 `knowledge/os/virtual-memory-tlb`（planned → expanded，L2）：
+
+  - 正文：多级页表与地址翻译、TLB 覆盖范围/PCID/TLB shootdown、minor/major/非法缺页、预触/`mlock`/大页/池化、量化交易场景映射与常见误区。
+  - `example.cpp`：两实验（64 MB 匿名内存首次触页 vs 已驻留、64 KB→128 MB 随机指针追逐），已在 Apple M2 Pro / macOS Darwin 25.5（16 KB 页）上用 `g++ -std=c++20 -O2 -Wall`（Apple clang 17）编译运行验证。
+  - 实测结果写入 §5：首次触页约 1.08 µs/页、已驻留约 0.22 µs/页、差值约 0.90 µs/页；随机指针追逐 1.2/4.9/7.1/64/103 ns（64 KB→128 MB）。
+
+### 更新
+
+- `knowledge/README.md`：os 模块进度 1/8 → 2/8；学习进度表新增 virtual-memory-tlb。
+- 根 `README.md`：os 模块已展开计数更新为 2。
+- `knowledge/os/README.md`：虚拟内存知识点状态改为 expanded，学习路径第 2 站标记已展开。
+
 ## \[0.4.0] - 2026-11-03
 
 ### 新增

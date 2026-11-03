@@ -7,7 +7,7 @@
 | 知识点 | 目录 | 状态 | 优先级 | 最近更新 | 依据 |
 |---|---|---|---|---|---|
 | 进程 / 线程 / 协程、fork 与写时复制 | process-thread-coroutine/ | planned | P0 | — | 面试必备 |
-| 虚拟内存：页表 / TLB / 缺页中断 | virtual-memory-tlb/ | planned | P0 | — | 面试必备；HFT 题库 |
+| 虚拟内存：页表 / TLB / 缺页中断 | [virtual-memory-tlb/](virtual-memory-tlb/README.md) | expanded | P0 | 2026-11-03 | 面试必备；HFT 题库；JD「内存管理」 |
 | 上下文切换、调度器与 CPU 亲和性 | [context-switch-affinity/](context-switch-affinity/README.md) | expanded | P0 | 2026-11-03 | 低延迟高频题；JD「进程调度」 |
 | 内存分配器：malloc 底层 / glibc / tcmalloc / jemalloc | memory-allocator/ | planned | P0 | — | HFT 题库 Q20；JD「内存管理」 |
 | 系统调用路径、用户态/内核态切换、vDSO | syscall-vdso/ | planned | P1 | — | 低延迟实战（时钟获取为何快） |
@@ -25,7 +25,7 @@
 |---|---|---|
 | 0（入口） | [context-switch-affinity](context-switch-affinity/README.md) ✅ 已展开 | 一次切换贵在哪、EEVDF/RT 怎么选任务、为什么绑核与隔离 |
 | 1 | 进程 / 线程 / 协程（planned） | 线程、进程、协程的创建/切换成本与适用场景 |
-| 2 | 虚拟内存与 TLB（planned） | 缺页、TLB miss、大页、`mlock` 如何进入尾延迟 |
+| 2 | [虚拟内存与 TLB](virtual-memory-tlb/README.md) ✅ 已展开 | 缺页、TLB miss、大页、`mlock` 如何进入尾延迟 |
 | 3 | 系统调用与 vDSO（planned） | 一次 syscall 的完整路径，为什么读时钟不用进内核 |
 | 4 | 中断 / IRQ 亲和性（planned） | 网卡收包从硬中断到 NAPI，谁在打扰你的关键核 |
 | 5 | 内核抢占与 PREEMPT_RT（planned） | 抢占模型、RT throttling、C-state/频率与抖动 |

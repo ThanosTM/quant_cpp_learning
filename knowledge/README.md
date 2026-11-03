@@ -10,7 +10,7 @@
 | [cpp](cpp/README.md) | C++ 语言与现代特性 | 1 / 11 |
 | [low-latency](low-latency/README.md) | 低延迟系统编程 | 1 / 9 |
 | [network](network/README.md) | 计算机网络 | 0 / 7 |
-| [os](os/README.md) | 操作系统 | 1 / 8 |
+| [os](os/README.md) | 操作系统 | 2 / 8 |
 | [arch](arch/README.md) | 计算机体系结构 | 0 / 7 |
 | [brainteaser](brainteaser/README.md) | 智力题与概率题 | 0 / 8 |
 
@@ -25,6 +25,7 @@
 | [smart-pointers 智能指针](cpp/smart-pointers/README.md) | cpp | expanded | L2 | 0 | 2026-09-02 |
 | [false-sharing 伪共享](low-latency/false-sharing/README.md) | low-latency | expanded | L2 | 2 | 2026-09-02 |
 | [context-switch-affinity 上下文切换、调度与 CPU 亲和性](os/context-switch-affinity/README.md) | os | expanded | L2 | 2 | 2026-11-03 |
+| [virtual-memory-tlb 虚拟内存：页表、TLB 与缺页中断](os/virtual-memory-tlb/README.md) | os | expanded | L2 | 2 | 2026-11-03 |
 
 ## 图例与维护说明
 
