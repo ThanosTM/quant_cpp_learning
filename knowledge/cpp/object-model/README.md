@@ -136,7 +136,9 @@ Multi 对象（sizeof = 32）
           Diamond
 ```
 
-- 访问虚基类的位置不是编译期常量，Left/Right 需要额外的**虚基偏移**（Itanium 用 vbptr / VTT 一类结构），再间接定位；因此 `sizeof(Left)` / `sizeof(Right)` 明显变大（实测各 32 字节，`Diamond` 48 字节）。
+- 访问虚基类的位置不是编译期常量：同一个 `Left` 单独存在时 `VBase` 在偏移 16，作为 `Diamond` 的基类时在偏移 32，所以 `sizeof(Left)` / `sizeof(Right)` 明显变大（实测各 32 字节，`Diamond` 48 字节）。
+
+- **虚基偏移存在 vtable 的负槽里，没有独立的 `vbptr`**：Itanium ABI 从 `[-3]` 起为每个虚基类存一项（到虚基子对象的偏移 + 到其 vptr 的偏移），`vptr` 兼任 vbptr，访问虚基成员因此多一次依赖加载；独立 `vbptr` + `vbtable` 是 MSVC 的做法。VTT 只在构造/析构期使用：虚基类由最派生类构造，中间层用构造 vtable 临时把 `VBase` 当成偏移 16。
 
 - `static_cast<Left*>(&dia)` 与 `static_cast<Right*>(&dia)` 得到的 `VBase*` **地址相同**（示例验证），因为共享同一子对象。
 
@@ -215,11 +217,11 @@ g++ -std=c++20 -O2 -Wall example.cpp -o example && ./example
 
 ## 7. 深度追问记录（落盘区）
 
-> 学习过程中的追问按行追加；结论影响主文时同步改正文并注明。暂无记录。
+> 学习过程中的追问按行追加；结论影响主文时同步改正文并注明。已记录 1 条。
 
 | 日期 | 问题 | 结论摘要 | 联动更新 |
 |---|---|---|---|
-| — | （待追加） | | |
+| 2026-11-03 | 实验 4 的四个类各自内存怎么排？ | `VBase` 16 / `Left` 32 / `Right` 32 / `Diamond` 48；`Diamond` 偏移 `vptr@0 · l@8 · vptr@16 · r@24 · d@28 · vptr@32 · v@40`，`d` 复用 `Right` 尾部 padding；虚基偏移由 vtable 负槽给出（Diamond 的 Left 子对象 `[-3]=32`、Right 子对象 `[-3]=16`、独立 Left `[-3]=16`），`[-2]` 依次为 0 / -16 / -32（GCC 12.2 x86-64 实测，与 §5 的 macOS 数值一致） | §4.4（虚基偏移机制，删除 vbptr 表述） |
 
 ## 8. 参考
 
