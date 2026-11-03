@@ -2,6 +2,23 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.4.0] - 2026-11-03
+
+### 新增
+
+- 展开 `knowledge/os/context-switch-affinity`（planned → expanded，L2）：
+
+  - 正文：切换的成本结构（直接/地址空间/缓存-TLB/排队）、内核切换路径、EEVDF 与 RT 调度、RT throttling、PREEMPT_RT、CPU 亲和性与隔离配方、绑核反模式、量化交易线程映射。
+  - `example.cpp`：四实验（系统调用 vs vDSO/commpage、管道 ping-pong 切换、`nanosleep` 唤醒抖动、Linux 绑核），已在 Apple M2 Pro / macOS Darwin 25.5 上用 `g++ -std=c++20 -O2 -Wall`（Apple clang 17）编译运行验证；Linux 亲和性分支为条件编译，未在本机执行。
+  - 实测结果写入 §5：系统调用约 132 ns、读时钟约 21 ns、切换往返约 4.5 µs、1 ms 睡眠的 overshoot p50 约 511 µs。
+
+- `knowledge/os/README.md` 新增规划知识点：`interrupt-irq-affinity`（中断/NAPI/IRQ 亲和性）、`kernel-preemption-rt`（抢占/PREEMPT_RT/C-state 抖动），并新增「低延迟主线」学习顺序表。
+
+### 更新
+
+- `knowledge/README.md`：os 模块进度 0/6 → 1/8；学习进度表新增 context-switch-affinity。
+- 根 `README.md`：os 模块已展开计数更新为 1。
+
 ## \[0.3.1] - 2026-09-02
 
 ### 新增
