@@ -47,7 +47,7 @@
 | low-latency（低延迟） | 1（false-sharing） | 0 | 详见 [knowledge/low-latency/README.md](knowledge/low-latency/README.md) |
 | network（网络） | 0 | 0 | 详见 [knowledge/network/README.md](knowledge/network/README.md) |
 | os（操作系统） | 2（context-switch-affinity、virtual-memory-tlb） | 0 | 6（规划，详见 [knowledge/os/README.md](knowledge/os/README.md)） |
-| arch（体系结构） | 0 | 0 | 详见 [knowledge/arch/README.md](knowledge/arch/README.md) |
+| arch（体系结构） | 2（timing-counters、cache-hierarchy-mesi） | 0 | 详见 [knowledge/arch/README.md](knowledge/arch/README.md) |
 | brainteaser（智力/概率） | 0 | 0 | 详见 [knowledge/brainteaser/README.md](knowledge/brainteaser/README.md) |
 
 知识点总索引与学习进度表见 [knowledge/README.md](knowledge/README.md)；真题索引见 [interview/README.md](interview/README.md)。

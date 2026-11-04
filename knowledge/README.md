@@ -11,7 +11,7 @@
 | [low-latency](low-latency/README.md) | 低延迟系统编程 | 1 / 9 |
 | [network](network/README.md) | 计算机网络 | 0 / 7 |
 | [os](os/README.md) | 操作系统 | 2 / 8 |
-| [arch](arch/README.md) | 计算机体系结构 | 0 / 7 |
+| [arch](arch/README.md) | 计算机体系结构 | 2 / 7 |
 | [brainteaser](brainteaser/README.md) | 智力题与概率题 | 0 / 8 |
 
 ## 学习进度表（Agent 维护）
@@ -27,6 +27,8 @@
 | [false-sharing 伪共享](low-latency/false-sharing/README.md) | low-latency | expanded | L2 | 2 | 2026-09-02 |
 | [context-switch-affinity 上下文切换、调度与 CPU 亲和性](os/context-switch-affinity/README.md) | os | expanded | L2 | 2 | 2026-11-03 |
 | [virtual-memory-tlb 虚拟内存：页表、TLB 与缺页中断](os/virtual-memory-tlb/README.md) | os | expanded | L2 | 2 | 2026-11-03 |
+| [timing-counters 计时与计数器](arch/timing-counters/README.md) | arch | expanded | L2 | 4 | 2026-11-03 |
+| [cache-hierarchy-mesi 缓存层次、局部性与 MESI](arch/cache-hierarchy-mesi/README.md) | arch | expanded | L2 | 5 | 2026-11-04 |
 
 ## 图例与维护说明
 
