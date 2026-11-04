@@ -16,11 +16,12 @@
 | constexpr 编译期计算 | constexpr/ | planned | P1 | HFT 题库 Q11 |
 | lambda 捕获与闭包 | lambdas/ | planned | P1 | HFT 题库 Q13 |
 | 分配器与内存池 | allocators/ | planned | P1 | HFT 题库 Q20（与 low-latency 交叉） |
-| C++23/26 新特性速览 | modern-cpp-23-26/ | planned | P2 | JD「新特性」 |
+| 现代 C++ 版本演进（14/17/20/23/26） | [modern-cpp/](modern-cpp/README.md) | expanded | P2 | JD「新特性」；用户补基础 |
 
 优先级定义见 [research/03-tech-stack-map.md](../../research/03-tech-stack-map.md)。
 
 ## 模块说明
 
 - 内存序与原子操作归入 [low-latency](../low-latency/README.md) 模块，避免重复维护；本模块相关真题互链。
+- 现代 C++ 按版本拆成五篇（[cpp14](modern-cpp/cpp14.md)、[cpp17](modern-cpp/cpp17.md)、[cpp20](modern-cpp/cpp20.md)、[cpp23](modern-cpp/cpp23.md)、[cpp26](modern-cpp/cpp26.md)），总览与学习顺序见 [modern-cpp](modern-cpp/README.md)。
 - 面试特征：国内面试喜欢**从一行代码追问到底层**（如 `std::move(x)` 展开成什么、map 红黑树 vs hash），因此每个知识点的「深度追问记录」是本模块的核心资产。

@@ -2,6 +2,50 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.11.0] - 2026-11-04
+
+### 新增
+
+- 展开 `knowledge/cpp/modern-cpp`（planned → expanded，L2），按版本拆成五篇：
+
+  - `README.md`：版本主线（14 补语法 → 17 补库 → 20 换范式 → 23 补实用 → 26 上前沿）、14/17/20/23/26 学习顺序、跨版本能力对照、本机标准开关与量化/HFT 使用原则。
+  - `cpp14.md`：泛型 lambda、返回类型推导、放宽 constexpr、变量模板、`make_unique`、`index_sequence`、初始化捕获与小特性合集。
+  - `cpp17.md`：结构化绑定、`if constexpr`、折叠表达式、inline 变量、CTAD、`optional/variant/any/string_view`、`filesystem`、`pmr`、硬件干扰尺寸（本机实测 64）、并行算法与保证复制消除。
+  - `cpp20.md`：concepts、ranges、coroutines、modules 四大支柱，外加 `<=>`、`span`、`jthread`、`latch/barrier/semaphore`、`atomic_ref`、`format`、`source_location`、`bit_cast` 与 `[[likely]]`。
+  - `cpp23.md`：`expected`、`print`、`flat_map/flat_set`、`mdspan`、`generator`、deducing this、`if consteval`、`unreachable`、`[[assume]]`、多维下标、`to_underlying`/`byteswap`、`move_only_function`、optional 单子、`ranges::to`/`zip`/`fold_left`。
+  - `cpp26.md`：反射（P2996）、契约（P2900）、`#embed`、包索引、占位变量、`simd`、`linalg`、`submdspan`、`inplace_vector`、`hive`、`<rcu>`/hazard pointer、`std::execution` 与 adoption 建议。
+  - `example14.cpp`（C++14）：泛型 lambda、初始化捕获、变量模板、放宽 constexpr、`make_unique`、`index_sequence`、二进制/chrono 字面量、`exchange`、`shared_lock`，已用 `clang++ -std=c++14 -O2 -Wall` 编译运行通过。
+  - `example17.cpp`（C++17）：结构化绑定、`if constexpr`、折叠表达式、`optional`/`variant`/`any`、`string_view`、`filesystem`、`pmr`、inline 变量、CTAD、硬件干扰尺寸，已用 `clang++ -std=c++17 -O2 -Wall` 编译运行通过。
+  - `example.cpp`（C++20）：14/17/20 三段式巡礼，已用 `clang++ -std=c++20 -O2 -Wall` 编译运行通过，无警告。
+  - `example23.cpp`（C++23）：`expected` 单子链、`flat_map`、`mdspan`、`ranges::to`、`optional::transform`、`resize_and_overwrite`、`views::zip`、`println`，已用 `clang++ -std=c++23 -O2 -Wall` 编译运行通过。
+  - 实测输出：`example14.cpp` 打印 `generic=42 pi=3.14159 constexpr=5050 unique=7 tuple=6 capture=42 bin=170 timeout=100 exchange=1`；`example17.cpp` 打印 `has_size=yes binding=1 2.5 three optional=7 variant=variant any=3.14 view=view`、`ctad=2.5 clamp=10 gcd=6 lcm=12 byte=66 path="/tmp/probe.txt" fold=10 inline=1 interference=64`；`example.cpp` 打印 `generic=42 pi=3.1416 constexpr=5050 unique=7 tuple=6 capture=42`、`binding: 1 2.5 three`、`optional=7 view=view variant=variant fold=10 ctad=2.5 inline=1`、`concept=42 ranges=20 span=5 <=>=true atomic=1 bitcast=0x3f800000`；`example23.cpp` 打印 `expected=43 flat_map=3 mdspan=6 to=3 optional=9 text=xbc zip=66`。
+  - 本机缺口实测：C++20 的 `std::midpoint`、`std::osyncstream` 缺失；C++23 的 `generator`/`move_only_function`/`stacktrace`/`enumerate`/`chunk`/`join_with`/`cartesian_product`/`start_lifetime_as` 缺失；C++26 模式下仅 pack indexing、`#embed`（Clang 扩展）、`= delete("reason")`、占位变量可用（`[[assume]]` 为 C++23 特性，在 C++26 模式下同样可用），反射/契约/`simd`/`linalg`/`inplace_vector`/`hive` 不可用。
+
+### 更新
+
+- `knowledge/cpp/README.md`：`modern-cpp-23-26/`（planned）→ `modern-cpp/`（expanded），补充五篇版本子文档导航。
+- `knowledge/README.md`：cpp 模块进度 3/11 → 4/11；学习进度表新增 modern-cpp（expanded，L2，2026-11-04）。
+- `research/03-tech-stack-map.md`：P2 考点「C++23/26 新特性速览」更新为「现代 C++ 版本演进（14/17/20/23/26）」。
+- 根 `README.md`：cpp 已展开计数更新为 4。
+
+## \[0.10.0] - 2026-11-04
+
+### 新增
+
+- 展开 `knowledge/arch/branch-predictor`（planned → expanded，L2）：
+
+  - 正文：前端预测方向/目标、BTB/RAS、静态预测、1-bit/2-bit、相关/TAGE、预测失败惩罚、CSEL/CMOV 无分支、`[[likely]]` 的真实作用、控制变量与汇编核对、量化场景与误区。
+  - `example.cpp`：三实验（有序 vs 无序、随机数据 branch vs branchless、有序/交替/随机模式敏感性），已在 Apple M2 Pro / macOS 26.5.1（Darwin 25.5.0，arm64，Apple clang 17）上用 `g++ -std=c++20 -O2 -Wall` 编译运行通过，无警告，每个配置 5 次取中位数、整体 3 次取中位数。
+  - 实测写入 §5：sorted 12.97 ms（0.405 ns/元素）、random 97.85 ms（3.058 ns/元素，7.55x）、random branchless 16.07 ms（0.502 ns/元素，6.11x 于 random branch）、alternating 19.10 ms（0.597 ns/元素，约 5x 快于 random）；按 50% 误预测粗估单次约 5.3 ns。
+  - 汇编核对：`sum_branch` 生成 `tbz` 真分支，`sum_branchless` 生成 `and/asr` + `add` 无分支。
+
+### 更新
+
+- `knowledge/arch/README.md`：branch-predictor 状态 planned → expanded；学习主线第 2 站标记已完成。
+- `knowledge/README.md`：arch 模块进度 2/7 → 3/7；学习进度表新增 branch-predictor。
+- 根 `README.md`：arch 已展开计数更新为 3。
+- `knowledge/arch/branch-predictor/followups.md`：4 个学习问题全部闭环，暂无未解决项。
+
 ## \[0.9.1] - 2026-11-04
 
 ### 文档

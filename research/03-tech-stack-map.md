@@ -18,7 +18,7 @@
 | constexpr 编译期计算 | P1 | HFT 题库 |
 | lambda 捕获与闭包 | P1 | HFT 题库 |
 | 分配器 / 内存池 / placement new | P1 | HFT 题库（Q20 memory pool） |
-| C++23/26 新特性速览（协程、expected 等） | P2 | JD「新特性」开放性要求 |
+| 现代 C++ 版本演进（14/17/20/23/26；协程、expected、反射等） | P2 | JD「新特性」开放性要求 |
 
 ## 2. low-latency — 低延迟系统编程
 
