@@ -9,7 +9,7 @@
 |---|---|---|
 | [cpp](cpp/README.md) | C++ 语言与现代特性 | 3 / 11 |
 | [low-latency](low-latency/README.md) | 低延迟系统编程 | 1 / 9 |
-| [network](network/README.md) | 计算机网络 | 0 / 7 |
+| [network](network/README.md) | 计算机网络 | 0 / 8 |
 | [os](os/README.md) | 操作系统 | 2 / 8 |
 | [arch](arch/README.md) | 计算机体系结构 | 2 / 7 |
 | [brainteaser](brainteaser/README.md) | 智力题与概率题 | 0 / 8 |

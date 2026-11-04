@@ -31,6 +31,18 @@
 - 根 `README.md`：arch 已展开计数更新为 2。
 - `knowledge/arch/cache-hierarchy-mesi/followups.md`：4 个学习问题全部闭环，暂无未解决项。
 
+## \[0.8.1] - 2026-11-03
+
+### 文档
+
+- `knowledge/network/README.md`：新增「网络主线（建议学习顺序）」与「本机实验环境注意」：
+
+  - 把知识点排成 1→8 的推进顺序，逐站给出「这一站解决什么」与 example 实验锚点；Nagle 归入 2 站，避免 `socket-parameters` 只剩背结论。
+  - 明确真题落位：富途握手/队列 → 1 站，垒昂 epoll/`TCP_NODELAY` → 3/5 站，宽德粘包拆包 → 4 站；真题落 `interview/system/` 并双向互链。
+  - 记录 Apple M2 Pro / macOS 的实验限制：无 epoll、`splice` 仅 Linux、`tc netem` 不在本机、队列观测需 Linux、抓包需 sudo；Linux-only 分支需在容器内编译验证。
+- `knowledge/network/README.md` 知识点清单：补 `tcp-framing`（P1，依据宽德真题与 [research/03](research/03-tech-stack-map.md)），各条依据列补 JD/面经锚点。
+- `knowledge/README.md`：network 模块规划数 0/7 → 0/8。
+
 ## \[0.8.0] - 2026-11-03
 
 ### 新增
