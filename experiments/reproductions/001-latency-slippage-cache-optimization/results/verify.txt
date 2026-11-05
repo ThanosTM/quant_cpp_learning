@@ -1,0 +1,8 @@
+verify baseline     hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+verify batch4       hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+verify prefetch     hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+verify evict        hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+verify dual_full    hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+verify dual_compact hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+verify dual_publish hits=6984306 qsum=1293815637696780558 mix=0xf0902a8b41bb871
+PASS: all stages produce identical hit/qsum/mix

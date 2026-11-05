@@ -5,18 +5,19 @@
 ## 0. 会话自举流程（每次必做）
 
 1. 读根目录 `README.md`（项目导航）与本文件（维护规范）。
-2. 读三级索引，确认当前状态：
+2. 读索引，确认当前状态：
    - `knowledge/README.md` —— 知识点总索引与学习进度
    - `interview/README.md` —— 真题与面经索引
    - `research/README.md` —— 岗位调研文档清单
-3. 根据用户指令判断任务类型，进入 §2 对应工作流。
-4. 全程使用**中文**输出；技术术语首次出现附英文原文。
+3. 涉及实验/复现/性能案例时，读 `experiments/README.md` 与对应子目录 README。
+4. 根据用户指令判断任务类型，进入 §2 对应工作流。
+5. 全程使用**中文**输出；技术术语首次出现附英文原文。
 
 ## 1. 项目定位
 
 - 目标岗位：量化私募 C++ 开发 / 核心系统开发（交易系统、行情系统等）。
-- 内容三支柱：`research/`（调研）→ `knowledge/`（知识体系）→ `interview/`（真题实战）。
-- 核心理念：**知识点 = 详细讲解 + 可运行 example + 追问沉淀**；真题必须按题给出分步解答；一切内容落盘为 Markdown，可 git 追溯。
+- 内容四支柱：`research/`（调研）→ `knowledge/`（知识体系）→ `interview/`（真题实战）→ `experiments/`（复现与 Agent 训练案例）。
+- 核心理念：**知识点 = 详细讲解 + 可运行 example + 追问沉淀**；真题必须按题给出分步解答；实验必须真实可跑、3 次中位数、包含失败案例；一切内容落盘为 Markdown，可 git 追溯。
 
 ## 2. 任务工作流
 
@@ -62,11 +63,37 @@
 - 用户说「掌握了某知识点」→ 状态升级 `mastered`，并在该知识点 README 末尾追加自测清单（5 题快问快答）。
 - 用户要求复习 → 根据「深度追问记录」生成复习卡片。
 
+### G. 实验（复现 / Agent 案例）
+
+#### G1. 复现外部低延迟技术贴
+
+1. 读原文并记录 URL、核实日期；能拿到原始 slides/代码优先使用，拿不到就在报告中标注「按文字描述重建」。
+2. 建 `experiments/reproductions/NNN-<slug>/`，按 [templates/experiment.md](templates/experiment.md) 写报告。
+3. 先做硬件映射：缓存行/末级缓存/可用指令/计时/PMU/线程亲和性；在报告中写清 x86 与 ARM64 的对应关系。
+4. 实现可运行基线 + 分步优化版本，所有版本共用同一业务计算函数；用 `--stage verify` 证明 `hits/qsum/checksum` 完全一致。
+5. 每个配置 3 次运行取中位数，写入 `results/raw.csv` 与 `results/summary.md`；至少保留一个负收益配置。
+6. 必须写「原文结论 vs 本机实测」偏差表；禁止把原文的 Intel 计数器数字当作本机结论。
+7. 更新 `experiments/README.md`、`experiments/reproductions/README.md`、根 `README.md` 与 `CHANGELOG.md`。
+
+#### G2. 构造 Agent 训练案例
+
+用户说「构造一个性能优化案例」时：
+
+1. 建 `experiments/agent-cases/NNN-<slug>/`，按 [templates/agent-case.md](templates/agent-case.md) 写任务书。
+2. 基线必须真实编译运行并测 3 次；任务书只写场景/基线/验收/约束，**不泄露答案**。
+3. 参考解放 `solution/`，同样必须跑通、校验和一致、测 3 次；基线或参考解任一跑不通则案例作废。
+4. `coach.md` 按「观察指标 → 问题位置 → 方案清单 → 对答案」分级；用户说「给下一级提示」时才揭示下一级，前两级不得出现可直接粘贴的代码。
+5. 至少设计一个本机负收益的“看起来合理”的方案，用于训练判断力。
+6. 用户说「验证我的版本」时：真实编译 `src/attempt.cpp`，跑基线/参与者/参考解对比，逐项报告 C1..Cn 是否达标，禁止只说“看起来更快”。
+7. 更新 `experiments/agent-cases/README.md` 案例索引与 `CHANGELOG.md`。
+
 ## 3. 目录与命名规范
 
 | 项 | 规范 |
 |---|---|
 | 知识点目录 | `knowledge/<module>/<kebab-case-slug>/`，内含 `README.md`（讲解）、`example.cpp`、可选 `followups.md`、可选 `example2*.cpp` |
+| 复现实验 | `experiments/reproductions/NNN-<kebab-case-slug>/`，含 `README.md`、`Makefile`、`run_all.sh`、`src/`、`micro/`、`results/` |
+| Agent 案例 | `experiments/agent-cases/NNN-<kebab-case-slug>/`，含任务书、基线、`attempt.cpp`、`coach.md`、`solution/`、`results/` |
 | 真题文件 | `interview/<category>/NNN-short-slug.md`，NNN 三位序号，category ∈ cpp/system/algorithm/brainteaser |
 | 面经文件 | `interview/experiences/NNN-<company>-<year>.md` |
 | 状态枚举 | `planned`（仅规划）/ `outline`（仅大纲）/ `expanded`（正文+example 完成）/ `mastered`（追问沉淀+自测通过） |
@@ -80,15 +107,17 @@
 - 真题解答必须「按题」逐步展开，禁止只给要点不展开；代码验证块需可直接复制编译。
 - 外部信息必须附来源链接与核实日期；**禁止编造面经、公司名、题目**；无法核实的标注 `[未核实]`。
 - 知识点之间用相对路径互相链接（如 `../move-semantics/README.md`），与真题互链形成网状结构。
+- 实验必须真实编译运行；每个配置 3 次运行取中位数；报告中必须包含硬件映射、偏差/负收益分析与平台限制（见 `experiments/README.md` 质量门槛）。
 
-## 5. 索引一致性义务（三级索引）
+## 5. 索引一致性义务（知识、真题与实验）
 
 任何内容变更后，同步检查：
 1. 知识点所属模块 `README.md` 的清单表（状态、日期）；
 2. `knowledge/README.md` 总索引；
 3. `interview/README.md`（涉及真题/面经时）；
-4. `README.md` 顶部进度表（已展开/进行中计数变化时）；
-5. `CHANGELOG.md` 追加条目。
+4. `experiments/README.md` 实验清单 + `experiments/reproductions/README.md` 或 `experiments/agent-cases/README.md` 子索引（涉及实验时）；
+5. `README.md` 顶部进度表（已展开/进行中计数变化时）；
+6. `CHANGELOG.md` 追加条目。
 
 ## 6. Git 提交规范
 

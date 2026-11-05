@@ -2,6 +2,32 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.13.0] - 2026-11-05
+
+### 新增
+
+- 新建 `experiments/` 实验库，分两条主线：
+  - `reproductions/`：复现网络低延迟技术贴/演讲，按本机硬件重测并解释偏差；
+  - `agent-cases/`：由 Agent 按指令构造盲基线 + 验收指标 + 分级提示 + 参考解的性能优化案例。
+- `experiments/common/bench.hpp`：纳秒计时、p50/p90/p99、QoS、ARM64/x86 缓存行操作（`prfm`、`dc civac`、`dc cvac`、`clflushopt`、`clwb`）、`cpu_relax`。
+- `experiments/common/summarize.py`：把 `raw.csv` 的多配置多次运行聚合为 Markdown 中位数表。
+- `templates/experiment.md`、`templates/agent-case.md`：实验报告与 Agent 案例任务书模板。
+- 第一个复现 `experiments/reproductions/001-latency-slippage-cache-optimization/`：
+  - 按微信文章 + CppCon 2026「The Latency Slippage」重建 64 期权重算场景：16 384 标的、每事件 140 条 128B 行、工作集约 379 MB。
+  - 实现串行基线、批处理（D 扫描）、软件预取（T0/stream）、事件行驱逐、双核 48+16（完整回传/解耦/`dc cvac`）五个版本，共用同一计算函数。
+  - 本机第一组 3 次运行中位数：p50 1416 → 916 ns（-35.3%），p90 1666 → 1125 ns（-32.5%），mean 1442.0 → 960.2 ns（-33.4%）；独立第二组复跑：p50 1416 → 958 ns（-32.3%），mean 1433.5 → 985.6 ns。两组稳定复现前三步（批处理+预取+事件行驱逐，约 -32%）；第四步只有 4c 的均值改善 4%~5%，4a/4b 方向不稳定。
+  - 偏差实测：M2 上 D=64 没有 LFB 悬崖（反而最优）、`stream` 没有 NTA 式暴涨、双核仅 -4.4%（原文 -20%）；跨核 128B 脏行 handoff 中位数 96 ns。
+  - `--stage verify`：7 个版本的 `hits/qsum/checksum` 完全一致（PASS）。
+  - `micro/probe.cpp`：缓存层次延迟、`dc civac/cvac` 成本（约 1.44 ns/条）、跨核 handoff 探针。
+  - `run_all.sh`：14 个配置 × 3 次运行 + 汇总 + verify + 3 次环境探针，结果落盘 `results/`。
+  - `run_repeat.sh` 与独立第二组复跑数据 `results/repeat_raw.csv` / `results/repeat_summary.md`：用于暴露第三/四步的调度噪声，报告中按 A/B 两组呈现。
+
+### 更新
+
+- 根 `README.md`：目录树新增 `experiments/`，使用说明新增复现/案例指令，新增「实验库」进度表。
+- `AGENT.md`：定位改为四支柱；新增 §2.G 实验工作流（复现 / Agent 案例）；目录命名规范新增 experiments；索引义务新增实验索引；质量门槛新增“真实编译、3 次中位数、偏差/负收益分析”。
+- `experiments/README.md`、`experiments/reproductions/README.md`、`experiments/agent-cases/README.md`：实验清单、复现规范、Agent 案例契约与反作弊规则。
+
 ## \[0.12.0] - 2026-11-04
 
 ### 新增

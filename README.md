@@ -22,7 +22,11 @@
 ├── interview/           # 笔试面试真题（按题解答）与面经归档
 │   ├── cpp/  system/  algorithm/  brainteaser/
 │   └── experiences/     # 面经
-├── templates/           # 知识点 / 真题 / 面经 / 追问 的写作模板
+├── experiments/         # 实验库：外部技术贴复现 + Agent 构造的性能优化案例
+│   ├── common/          # 计时、分位数、缓存行操作、结果聚合
+│   ├── reproductions/   # 复现：本机重测并解释偏差
+│   └── agent-cases/     # 盲基线 + 验收 + 分级提示 + 参考解
+├── templates/           # 知识点 / 真题 / 面经 / 追问 / 实验 / 案例 的写作模板
 └── scripts/new_topic.sh # 一键创建新知识点骨架
 ```
 
@@ -36,6 +40,9 @@
 | 「把这份面经整理进来」 | 按面经模板归档到 interview/experiences/ |
 | 「刷新一下岗位调研」 | 检索最新 JD / 面经，更新 research/ 并标注核实日期 |
 | 「这个知识点我掌握了」 | 将状态升级为 mastered，并输出自测清单 |
+| 「复现这篇低延迟文章：<URL>」 | 建 experiments/reproductions/ 实验，做硬件映射、重建案例、3 次中位数与偏差分析 |
+| 「构造一个性能优化案例，难度 L2」 | 建 experiments/agent-cases/：盲基线 + 验收指标 + 分级提示 + 参考解 |
+| 「给下一级提示 / 验证我的版本」 | 只揭示下一级提示 / 真实编译对比并逐项报告是否达标 |
 
 ## 知识模块与进度
 
@@ -51,6 +58,15 @@
 | brainteaser（智力/概率） | 0 | 0 | 详见 [knowledge/brainteaser/README.md](knowledge/brainteaser/README.md) |
 
 知识点总索引与学习进度表见 [knowledge/README.md](knowledge/README.md)；真题索引见 [interview/README.md](interview/README.md)。
+
+## 实验库
+
+| 类型 | 已完成 | 说明 |
+|---|---|---|
+| 复现（reproductions） | 1 | [001 Latency Slippage：批处理/预取/驱逐/双核](experiments/reproductions/001-latency-slippage-cache-optimization/README.md)，本机 p50 1416 → 916~958 ns（稳定 -32%，单组最好 -35%） |
+| Agent 案例（agent-cases） | 0 | 等待指令构造；规则见 [experiments/agent-cases/README.md](experiments/agent-cases/README.md) |
+
+实验库入口与质量门槛见 [experiments/README.md](experiments/README.md)。
 
 ## 维护
 

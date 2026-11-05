@@ -1,0 +1,17 @@
+cpu=Apple M2 Pro cores=12 perf_cores=8 l1d=131072 l2_cluster=16777216 line=128
+cache_latency (random pointer chase, ns/load):
+  L1 64KB        0.89
+  L1 128KB       0.91
+  L2 1MB         6.11
+  L2 8MB         7.32
+  L2 16MB       40.24
+  DRAM 32MB     91.40
+  DRAM 128MB   118.71
+cache_op_cost (same line, 1000000 ops):
+  touch load             0.29 ns/op
+  prfm pldl1keep         0.29 ns/op
+  dc civac               1.44 ns/op
+  dc cvac                1.46 ns/op
+cross_core_transfer (128B payload):
+  dirty (no cvac)           96.23 ns/handoff  (192.46 ns/round-trip)
+  dirty + dc cvac          144.31 ns/handoff  (288.62 ns/round-trip)
