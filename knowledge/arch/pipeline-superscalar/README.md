@@ -19,7 +19,7 @@
 - [timing-counters](../timing-counters/README.md)（已展开）：批处理计时与中位数。
 - [cache-hierarchy-mesi](../cache-hierarchy-mesi/README.md)（已展开）：缓存 miss 会成为流水线停顿的重要来源。
 - [branch-predictor](../branch-predictor/README.md)（已展开）：控制冒险与前端 flush。
-- 下一站 [simd](../simd/README.md)（规划中）：数据级并行；本站刻意禁用向量化，只看标量 ILP。
+- 下一站 [simd](../simd/README.md)（已展开）：数据级并行；本站刻意禁用向量化，只看标量 ILP。
 
 ## 4. 核心讲解
 
@@ -187,5 +187,5 @@ N=100,000,000 次加法；`KEEP_FP` 内联屏障防止编译器把 `x += 1.0` �
 - Bryant & O'Hallaron, *CSAPP*，第 4-5 章（处理器体系结构/优化程序性能）（核实日期 2026-11-04）
 - Agner Fog, *The Microarchitecture of Intel, AMD and VIA CPUs*（流水线、执行端口、ILP）[agner.org](https://www.agner.org/optimize/)（核实日期 2026-11-04）
 - Linux `perf` cycles/instructions 与 IPC：[perf wiki](https://perf.wiki.kernel.org/)（核实日期 2026-11-04）
-- 关联知识点：[branch-predictor](../branch-predictor/README.md)、[cache-hierarchy-mesi](../cache-hierarchy-mesi/README.md)、[timing-counters](../timing-counters/README.md)、[simd](../simd/README.md)（规划中）
+- 关联知识点：[branch-predictor](../branch-predictor/README.md)、[cache-hierarchy-mesi](../cache-hierarchy-mesi/README.md)、[timing-counters](../timing-counters/README.md)、[simd](../simd/README.md)（已展开：SIMD 与 ILP 正交且可叠加）
 - 关联真题：`interview/system/`（待补，流水线/ILP 类真题后续拆解归档）

@@ -11,7 +11,7 @@
 | [low-latency](low-latency/README.md) | 低延迟系统编程 | 1 / 9 |
 | [network](network/README.md) | 计算机网络 | 0 / 8 |
 | [os](os/README.md) | 操作系统 | 2 / 8 |
-| [arch](arch/README.md) | 计算机体系结构 | 4 / 7 |
+| [arch](arch/README.md) | 计算机体系结构 | 5 / 7 |
 | [brainteaser](brainteaser/README.md) | 智力题与概率题 | 0 / 8 |
 
 ## 学习进度表（Agent 维护）
@@ -32,6 +32,7 @@
 | [cache-hierarchy-mesi 缓存层次、局部性与 MESI](arch/cache-hierarchy-mesi/README.md) | arch | expanded | L2 | 5 | 2026-11-04 |
 | [branch-predictor 分支预测与预测失败惩罚](arch/branch-predictor/README.md) | arch | expanded | L2 | 4 | 2026-11-04 |
 | [pipeline-superscalar 流水线、乱序执行与 IPC](arch/pipeline-superscalar/README.md) | arch | expanded | L2 | 4 | 2026-11-04 |
+| [simd SSE/AVX/NEON 与自动向量化](arch/simd/README.md) | arch | expanded | L2 | 5 | 2026-11-05 |
 
 ## 图例与维护说明
 

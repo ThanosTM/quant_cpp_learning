@@ -2,6 +2,27 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.15.0] - 2026-11-05
+
+### 新增
+
+- 展开 `knowledge/arch/simd`（planned → expanded，L2），arch 主线第 4 站：
+
+  - 正文：SIMD 的 lane/吞吐与延迟、SSE/AVX/AVX-512/NEON/SVE 谱系与 x86 等价写法、编译器 loop/SLP 向量化器的「合法性 + 收益」两道判断、FP 归约为何只向量化乘法、失效清单（依赖链/跨步/别名/控制流/AoS）、对齐与尾部与 SoA、浮点语义与误差预算、ILP×SIMD 叠加与带宽衰减、量化场景映射与误区。
+  - `example.cpp`：三实验 + 一组汇编探针。逐元素乘法三版本（禁向量化 / 自动 / 手写 NEON，`memcmp` 逐位一致）、点积归约五版本（标量 / 自动 / 纯标量 4 链 / NEON 单累加器 / NEON 4 累加器）、48 KiB→192 MiB 工作集扫描；`used noinline` 探针覆盖别名、循环携带依赖、跨步访问、循环内条件。含 NEON 与 SSE2/AVX2 条件编译分支（x86 分支未在本机验证）。
+  - 已在 Apple M2 Pro / macOS 26.5.1（Darwin 25.5.0，arm64，Apple clang 17）上用 `g++ -std=c++20 -O2 -Wall` 编译运行通过、无警告；`-O3 -march=native` 版本同样跑通。每个配置程序内 5 次取中位数、整体 3 次再取中位数。
+  - 实测写入 §5：实验一 `mul_scalar/auto/simd` = 0.3185 / 0.1185 / 0.1192 ns/元素（2.69x / 2.67x，结果逐位一致）；实验二 `dot_scalar/auto/simd1/accum4/simd4` = 1.1730 / 0.8687 / 0.2906 / 0.2205 / 0.0887 ns/元素（1.00x / 1.35x / 4.04x / 5.32x / 13.22x），checksum 263492.406 → 263449（Δ −43.4062，相对约 1.6e-4）；实验三 auto 倍率 5.22x（48 KiB）→ 2.34x（192 MiB）。
+  - 汇编核对：`mul_auto` 生成 `ldp q` + `fmul.4s`（4 路展开），`dot_auto` 乘法向量化但归约仍是 16 条 `fadd s`；`probe_prefix`/`probe_stride` 零向量指令，`probe_branch` 被 if-conversion 成掩码。最初 `dot_accum4` 被 SLP 合成 `fmla.4s`，加 `KEEP_FP` 内联屏障后确认纯标量 4 链。
+  - `-O2` vs `-O3 -march=native`：2.69x vs 2.68x、13.22x vs 13.68x，差异在噪声范围内——本机 `-O2` 已向量化，NEON 是基线 ISA。
+  - `followups.md`：5 个学习问题闭环（写入 §7），另留 2 条 x86 分支与 `-fassociative-math` 的待查证项（缺实验环境）。
+
+### 更新
+
+- `knowledge/arch/README.md`：SIMD 状态 planned → expanded；主线第 4 站标记已展开并写入实际实验锚点；新增「第 3 站 → 第 4 站 ILP 与 SIMD 叠加」结论与本机编译选项实测提示。
+- `knowledge/README.md`：arch 模块进度 4/7 → 5/7；学习进度表新增 simd（expanded，L2，追问 5 条）。
+- 根 `README.md`：arch 已展开计数 4 → 5。
+- `knowledge/arch/pipeline-superscalar/README.md`：正文与参考中「simd（规划中）」改为「已展开」，补注两条并行度的关系。
+
 ## \[0.14.0] - 2026-11-05
 
 ### 新增
