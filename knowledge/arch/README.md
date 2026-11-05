@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | 缓存层次结构、局部性、MESI | [cache-hierarchy-mesi/](cache-hierarchy-mesi/README.md) | expanded | P0 | JD 点名；false-sharing 的前置 |
 | 分支预测与预测失败惩罚 | [branch-predictor/](branch-predictor/README.md) | expanded | P0 | 经典 example：有序/无序数组遍历；branchless 对比 |
-| 流水线、乱序执行与 IPC | pipeline-superscalar/ | planned | P1 | 面试追问「CPU 是怎么跑快的」 |
+| 流水线、乱序执行与 IPC | [pipeline-superscalar/](pipeline-superscalar/README.md) | expanded | P1 | 面试追问「CPU 是怎么跑快的」；依赖链 vs ILP |
 | SIMD：SSE / AVX / NEON 与自动向量化 | simd/ | planned | P1 | JD 点名 SIMD |
 | 硬件/软件预取与预取提示 | prefetch/ | planned | P2 | 数据布局进阶 |
 | CPU 拓扑：超线程、P/E 核（Apple Silicon） | cpu-topology-p-cores/ | planned | P2 | 跨平台基准测试需知 |
@@ -25,7 +25,7 @@
 | 0 | [timing-counters](timing-counters/README.md) ✅ 已展开 | P2 | 建立可信的 cycle/ns 基线，否则后面所有倍速都是噪声 | `clock_gettime`/`std::chrono` 开销；ARM 计数器实测 + x86 `rdtsc` 机制对照 |
 | 1 | [cache-hierarchy-mesi](cache-hierarchy-mesi/README.md) ✅ 已展开 | P0 | 行优先 vs 列优先的数量级差异从哪来；伪共享的机制根 | 工作集延迟曲线；2048×2048 矩阵两种遍历；MESI 偏移扫描 |
 | 2 | [branch-predictor](branch-predictor/README.md) ✅ 已展开 | P0 | 有序/无序数组的条件求和差异；branchless 何时更快 | 有序/交替/随机三种模式；branch vs branchless；汇编确认真分支 |
-| 3 | [pipeline-superscalar](pipeline-superscalar/)（planned） | P1 | 依赖链 vs 指令级并行；为什么多开累加器能提速 | 单累加器 vs 4/8 累加器求和；指针追逐 vs 连续遍历 |
+| 3 | [pipeline-superscalar](pipeline-superscalar/README.md) ✅ 已展开 | P1 | 依赖链 vs 指令级并行；为什么多开累加器能提速 | 1/2/4/8 累加器归约；纯 ALU 链 1 vs 8；汇编确认标量 fadd |
 | 4 | [simd](simd/)（planned） | P1 | 自动向量化何时生效/失效；NEON 与 AVX 的对照 | `-O2` vs `-O3 -march=native` 的 dot product，查汇编确认 |
 | 5 | [prefetch](prefetch/)（planned） | P2 | 硬件预取的边界，软件预取的收益与反噬 | 顺序/随机遍历 ± `__builtin_prefetch` |
 | 6 | [cpu-topology-p-cores](cpu-topology-p-cores/)（planned） | P2 | P/E 核、超线程、绑核如何污染基准测试 | 同负载下的 QoS/绑核/迁移对比 |

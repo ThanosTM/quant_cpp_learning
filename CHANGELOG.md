@@ -2,6 +2,24 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.12.0] - 2026-11-04
+
+### 新增
+
+- 展开 `knowledge/arch/pipeline-superscalar`（planned → expanded，L2）：
+
+  - 正文：五级流水线与三类冒险、超标量/乱序/寄存器重命名/ROB、循环携带依赖与 ILP、多累加器拆归约、编译器重排限制、IPC/CPI 模型、量化场景与误区。
+  - `example.cpp`：两实验（1/2/4/8 累加器浮点归约、1 条 vs 8 条纯 ALU 链），已在 Apple M2 Pro / macOS 26.5.1（Darwin 25.5.0，arm64，Apple clang 17）上用 `g++ -std=c++20 -O2 -Wall` 编译运行通过，无警告，每个配置 5 次取中位数、整体 3 次取中位数。
+  - 实测写入 §5：sum1/2/4/8 = 7.28/3.70/1.97/1.14 ms（0.910/0.462/0.246/0.142 ns/元素，约 1.0x/2.0x/3.7x/6.4x）；纯 ALU chain1 91.21 ms（0.912 ns/add）vs chain8 11.35 ms（0.113 ns/add，约 8.0x）。
+  - 汇编核对：`KEEP_FP` 内联屏障阻止 SLP，sum4/sum8 均为标量 `fadd d`，没有 `fadd.2d`；chain1/chain8 分别为 1 条/8 条独立 `fadd`。
+
+### 更新
+
+- `knowledge/arch/README.md`：pipeline-superscalar 状态 planned → expanded；学习主线第 3 站标记已完成。
+- `knowledge/README.md`：arch 模块进度 3/7 → 4/7；学习进度表新增 pipeline-superscalar。
+- 根 `README.md`：arch 已展开计数更新为 4。
+- `knowledge/arch/pipeline-superscalar/followups.md`：4 个学习问题全部闭环，暂无未解决项。
+
 ## \[0.11.0] - 2026-11-04
 
 ### 新增
