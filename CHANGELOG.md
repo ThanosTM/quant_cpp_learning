@@ -2,6 +2,26 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.14.0] - 2026-11-05
+
+### 新增
+
+- 新增复现 `experiments/reproductions/002-order-book-data-structures/`，对应 Optiver / CppCon 2024「When Nanoseconds Matter」与微信文章《Optiver 低延迟交易系统设计 10 原则（上）》：
+  - 重建单侧买盘订单簿：48 层、200 万条头部主导事件（30% 改最优价、30% 顶部加量、10% 盘口内、5% 深部、25% 顶部删除），事件 12B，固定深度，最终 `{count,sum,mix}` 校验和。
+  - 实现 7 个变体：`std::map` 干净堆 / 污染堆、升序 vector（最优价在尾）、降序 vector（最优价在头）、手写 branchy 二分、branchless 二分、从尾部线性搜索。
+  - 主实验 A 组 3 次中位数：map-clean p50 18 ns，map-polluted 55 ns（p99 129 ns），vector-front 18 ns，vector-back 17 ns，binary-branchy 15 ns，binary-branchless 15 ns，linear 13 ns。
+  - 独立 B 组：map-clean 17 ns，map-polluted 59 ns，vector-front/back 18 ns，binary-branchy 14 ns，branchless 15 ns，linear 13 ns。
+  - 深度扫描（32/48/64/128 层）：linear 12/13/16/25 ns vs binary 15/15/16/16 ns，交叉点在 48~64 层。
+  - 结论：`std::map` 在污染堆下退化约 3 倍、长尾显著，线性搜索在小 N 下胜出——这两条复现；反转 vector 消除长尾、无分支二分降低 Bad Speculation/提升 IPC 两条未复现。
+  - `micro/search_asm.cpp` + `results/search_asm.s`：证明 Clang 已把 branchy 二分 if-convert 成 `csel`，branchless 与 branchy 的机器码逐条相同；macOS 无 PMU，原文 IPC 数字无法本机验证。
+  - `--verify`：7 个结构最终 `count/sum/mix` 完全一致（PASS）。
+  - `run_all.sh` / `run_repeat.sh` / `run_sweep.sh`：主实验、独立复跑、深度扫描各 3 次运行并落盘。
+
+### 更新
+
+- `experiments/common/summarize.py` 支持 `--keys` / `--metrics` / `--checksum-cols`，001 的默认行为保持不变，002 使用自定义列聚合。
+- `experiments/README.md`、`experiments/reproductions/README.md`、根 `README.md`、`knowledge/low-latency/README.md`、`CHANGELOG.md` 同步更新实验计数与索引。
+
 ## \[0.13.0] - 2026-11-05
 
 ### 新增

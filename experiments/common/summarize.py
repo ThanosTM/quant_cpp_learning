@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""把 experiments 的 raw.csv 聚合成 Markdown 表（3 次运行取中位数）。
+"""把 experiments 的 raw.csv 聚合成 Markdown 中位数表。
 
-CSV 约定（所有实验共用）：
-  run,stage,batch,hint,distance,events,p50_ns,p90_ns,p99_ns,mean_ns,min_ns,max_ns,hits,qsum,checksum
+默认适配 experiments/reproductions/001（stage/batch/... 与 hits/qsum/checksum）；
+其他实验可用 --keys / --metrics / --checksum-cols 指定列。
+
+CSV 约定：第一列 run 为第几次运行，其余列由实验自定义。
 """
 
 import argparse
@@ -11,49 +13,53 @@ import statistics
 import sys
 from collections import OrderedDict
 
-METRICS = ["p50_ns", "p90_ns", "p99_ns", "mean_ns", "min_ns", "max_ns"]
-KEYS = ["stage", "batch", "hint", "distance", "events"]
 
-
-def stage_key(value: str):
-    order = {"0": 0, "1": 1, "2": 2, "3": 3, "4a": 4, "4b": 5, "4c": 6}
-    return order.get(value, 99)
+def csv_list(value: str):
+    return [x.strip() for x in value.split(",") if x.strip()]
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("input")
     ap.add_argument("--output", default=None)
+    ap.add_argument("--keys", type=csv_list, default=["stage", "batch", "hint", "distance", "events"])
+    ap.add_argument(
+        "--metrics",
+        type=csv_list,
+        default=["p50_ns", "p90_ns", "p99_ns", "mean_ns", "min_ns", "max_ns"],
+    )
+    ap.add_argument("--checksum-cols", type=csv_list, default=["hits", "qsum", "checksum"])
+    ap.add_argument("--title", default="实验结果（多次运行的中位数）")
     args = ap.parse_args()
 
     groups: "OrderedDict[tuple, list[dict]]" = OrderedDict()
     with open(args.input, newline="") as f:
         for row in csv.DictReader(f):
-            key = tuple(row[k] for k in KEYS)
+            key = tuple(row[k] for k in args.keys)
             groups.setdefault(key, []).append(row)
 
+    header = args.keys + ["runs"] + args.metrics + ["校验和一致"]
     lines = [
-        "# 实验结果（3 次运行的中位数）",
+        f"# {args.title}",
         "",
-        "| stage | batch | hint | distance | runs | p50 (ns) | p90 (ns) | p99 (ns) | mean (ns) | 校验和一致 |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        "| " + " | ".join(header) + " |",
+        "|" + "|".join(["---"] * len(header)) + "|",
     ]
     bad = 0
     for key, rows in groups.items():
-        stage, batch, hint, distance, events = key
         med = {}
-        for m in METRICS:
+        for m in args.metrics:
             vals = [float(r[m]) for r in rows]
             med[m] = statistics.median(vals)
-        checksums = {(r["hits"], r["qsum"], r["checksum"]) for r in rows}
+        checksums = {tuple(r[c] for c in args.checksum_cols) for r in rows}
         ok = "是" if len(checksums) == 1 else "否"
         if len(checksums) != 1:
             bad += 1
-        lines.append(
-            f"| {stage} | {batch} | {hint} | {distance} | {len(rows)} | "
-            f"{med['p50_ns']:.0f} | {med['p90_ns']:.0f} | {med['p99_ns']:.0f} | "
-            f"{med['mean_ns']:.1f} | {ok} |"
-        )
+        cells = list(key) + [str(len(rows))]
+        for m in args.metrics:
+            cells.append(f"{med[m]:.1f}" if "mean" in m else f"{med[m]:.0f}")
+        cells.append(ok)
+        lines.append("| " + " | ".join(cells) + " |")
 
     text = "\n".join(lines) + "\n"
     if args.output:

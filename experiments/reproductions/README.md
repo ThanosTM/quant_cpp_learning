@@ -6,7 +6,8 @@
 
 | 编号 | 标题 | 原文 | 原文平台 | 本机平台 | 状态 | 结论摘要 |
 |---|---|---|---|---|---|---|
-| [001](001-latency-slippage-cache-optimization/README.md) | Latency Slippage：与缓存逻辑博弈 | CppCon 2026「The Latency Slippage」/ 微信文章 | Intel i9-14900KS，64B 行，36MB L3 | Apple M2 Pro，128B 行，16MB L2/cluster | 完成 | p50 1416 → 916~958 ns（稳定 -32%，单组最好 -35%），与原文 510 → 329 ns（-35.5%）在量级上一致；D=64 悬崖、NTA 反例未复现 |
+| [001](001-latency-slippage-cache-optimization/README.md) | Latency Slippage：与缓存逻辑博弈 | CppCon 2026「The Latency Slippage」/ 微信文章 | Intel i9-14900KS，64B 行，36MB L3 | Apple M2 Pro，128B 行，16MB L2/cluster | 完成 | p50 1416 → 916~958 ns（稳定 -32%，单组最好 -35%）；D=64 悬崖、NTA 反例未复现 |
+| [002](002-order-book-data-structures/README.md) | 订单簿：std::map / vector / 反转 / 无分支二分 / 线性搜索 | Optiver「When Nanoseconds Matter」/ 微信文章 | Intel（原文未披露完整平台） | Apple M2 Pro，48 层买盘，2M 事件 | 完成 | map 污染堆 18 → 55~59 ns（p99 95~129）；linear 13 vs binary 15 ns（N=48）；反转 vector 与无分支二分未复现 |
 
 ## 复现规范
 

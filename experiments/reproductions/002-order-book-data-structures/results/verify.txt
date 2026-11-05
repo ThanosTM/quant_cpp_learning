@@ -1,0 +1,8 @@
+verify map-clean        count=48 sum=8698856065 mix=0x6c8c598069938105
+verify map-polluted     count=48 sum=8698856065 mix=0x6c8c598069938105
+verify vector-front     count=48 sum=8698856065 mix=0x6c8c598069938105
+verify vector-back      count=48 sum=8698856065 mix=0x6c8c598069938105
+verify binary-branchy   count=48 sum=8698856065 mix=0x6c8c598069938105
+verify binary-branchless count=48 sum=8698856065 mix=0x6c8c598069938105
+verify linear           count=48 sum=8698856065 mix=0x6c8c598069938105
+PASS: all order-book structures produce identical state

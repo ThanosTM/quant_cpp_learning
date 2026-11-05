@@ -20,6 +20,7 @@
 | 编号 | 实验 | 来源 | 平台 | 状态 | 报告 |
 |---|---|---|---|---|---|
 | 001 | Latency Slippage：批处理 / 预取 / 驱逐 / 双核 | [CppCon 2026 演讲 + 微信文章](reproductions/001-latency-slippage-cache-optimization/README.md) | Apple M2 Pro | 完成 | [README](reproductions/001-latency-slippage-cache-optimization/README.md) |
+| 002 | 订单簿：std::map → vector → 反转 → 无分支二分 → 线性搜索 | [Optiver / CppCon 2024 演讲 + 微信文章](reproductions/002-order-book-data-structures/README.md) | Apple M2 Pro | 完成 | [README](reproductions/002-order-book-data-structures/README.md) |
 
 状态：`planned` 规划 ｜ `running` 已建环境未跑完 ｜ `complete` 基线+分步+3 次中位数+偏差分析齐全。
 

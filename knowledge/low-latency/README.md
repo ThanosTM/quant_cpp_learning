@@ -22,5 +22,6 @@
 
 - 本模块强调**动手实验**：每个知识点尽量给出可实测的基准 example（伪共享已有，SPSC 队列、内存池等展开时同样要求）。
 - 综合实战见 [experiments/001 Latency Slippage 复现](../../experiments/reproductions/001-latency-slippage-cache-optimization/README.md)：批处理、软件预取、事件行驱逐、双核解耦与缓存行写回，本机 p50 1416 → 916~958 ns（稳定 -32%）。
+- 数据结构实战见 [experiments/002 订单簿复现](../../experiments/reproductions/002-order-book-data-structures/README.md)：std::map / vector / 反转 / 无分支二分 / 线性搜索，map 污染堆 18 → 55~59 ns。
 - 与 [arch](../arch/README.md)（缓存/流水线原理）、[os](../os/README.md)（调度/系统调用成本）深度交叉；与 [cpp/memory-model 类真题](../cpp/README.md) 互链。
 - 面试信条（phantomcodeai）：**热路径上的分配几乎总是 bug 而非优化机会；lock-free ≠ wait-free**。

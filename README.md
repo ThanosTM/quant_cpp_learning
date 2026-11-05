@@ -63,7 +63,7 @@
 
 | 类型 | 已完成 | 说明 |
 |---|---|---|
-| 复现（reproductions） | 1 | [001 Latency Slippage：批处理/预取/驱逐/双核](experiments/reproductions/001-latency-slippage-cache-optimization/README.md)，本机 p50 1416 → 916~958 ns（稳定 -32%，单组最好 -35%） |
+| 复现（reproductions） | 2 | [001 Latency Slippage：批处理/预取/驱逐/双核](experiments/reproductions/001-latency-slippage-cache-optimization/README.md)，本机 p50 1416 → 916~958 ns（稳定 -32%，单组最好 -35%）；[002 订单簿：map/vector/线性搜索](experiments/reproductions/002-order-book-data-structures/README.md)，map 污染堆 18 → 55~59 ns，linear 13 vs binary 15 ns（N=48） |
 | Agent 案例（agent-cases） | 0 | 等待指令构造；规则见 [experiments/agent-cases/README.md](experiments/agent-cases/README.md) |
 
 实验库入口与质量门槛见 [experiments/README.md](experiments/README.md)。
