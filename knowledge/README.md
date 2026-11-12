@@ -7,7 +7,7 @@
 
 | 模块 | 定位 | 知识点数（已展开/规划） |
 |---|---|---|
-| [cpp](cpp/README.md) | C++ 语言与现代特性 | 4 / 11 |
+| [cpp](cpp/README.md) | C++ 语言与现代特性 | 11 / 11 |
 | [low-latency](low-latency/README.md) | 低延迟系统编程 | 1 / 9 |
 | [network](network/README.md) | 计算机网络 | 0 / 8 |
 | [os](os/README.md) | 操作系统 | 2 / 8 |
@@ -24,6 +24,13 @@
 | [move-semantics 移动语义](cpp/move-semantics/README.md) | cpp | expanded | L2 | 2 | 2026-09-02 |
 | [smart-pointers 智能指针](cpp/smart-pointers/README.md) | cpp | expanded | L2 | 0 | 2026-09-02 |
 | [object-model 对象模型](cpp/object-model/README.md) | cpp | expanded | L2 | 0 | 2026-11-03 |
+| [stl-containers STL 容器底层](cpp/stl-containers/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [raii-exception-safety RAII 与异常安全](cpp/raii-exception-safety/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [const-and-keywords const 正确性与关键字](cpp/const-and-keywords/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [templates-crtp 模板进阶：SFINAE→concepts、CRTP](cpp/templates-crtp/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [constexpr 编译期计算](cpp/constexpr/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [lambdas lambda 捕获与闭包](cpp/lambdas/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [allocators 分配器与内存池](cpp/allocators/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
 | [modern-cpp 现代 C++ 版本演进（14/17/20/23/26）](cpp/modern-cpp/README.md) | cpp | expanded | L2 | 0 | 2026-11-04 |
 | [false-sharing 伪共享](low-latency/false-sharing/README.md) | low-latency | expanded | L2 | 2 | 2026-09-02 |
 | [context-switch-affinity 上下文切换、调度与 CPU 亲和性](os/context-switch-affinity/README.md) | os | expanded | L2 | 2 | 2026-11-03 |

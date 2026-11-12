@@ -2,6 +2,27 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.16.0] - 2026-11-09
+
+### 新增
+
+- 补齐 cpp 模块剩余 7 个知识点（planned → expanded，L2），cpp 模块达到 11/11：
+
+  - `knowledge/cpp/stl-containers`：vector 几何扩容与迭代器失效、map 红黑树节点、unordered_map 桶/负载因子/rehash、容器选型、string SSO。`example.cpp` 六实验，本机实测：扩容 2 倍（1→2→4→8…）、`push_back(1000)` 11 次分配 vs `reserve(1000)` 1 次、`map` 49.7 ns/lookup vs `unordered_map` 3.7 ns/lookup（20 万键/10 万查询/3 轮取最优）、`sizeof(std::string)=24`、短串 SSO 容量 22。
+  - `knowledge/cpp/raii-exception-safety`：RAII 与栈展开、三种异常保证、copy-and-swap、noexcept 契约、构造失败不调用析构、ScopeGuard、`uncaught_exceptions`、异常 vs expected。`example.cpp` 六实验，实测：异常路径 `live objects=0`、强保证失败后原对象仍为 `size=2 [1,2]`、`is_nothrow_move_constructible` 均为 1、回滚/提交两条路径。
+  - `knowledge/cpp/const-and-keywords`：const 位置读法、const 成员函数与 `this` 类型、mutable、顶层/底层 const 推导、static 三种位置、inline 变量、explicit、const 返回值抑制移动、constexpr/consteval/constinit/const 区分、volatile 误区、final/override。`example.cpp` 七实验，实测：`sizeof(Widget)=4`、const 对象 `std::move` 输出 `copy`。
+  - `knowledge/cpp/templates-crtp`：模板实例化与两阶段查找、CRTP 静态多态与混入、SFINAE/`void_t`、concepts 四种 requires、type_traits、标签分派、折叠表达式、模板工程代价。`example.cpp` 八实验，实测：`sizeof(Circle)=8`（EBO 无 vptr）、CRTP 计数器各自独立、concepts `static_assert` 通过。
+  - `knowledge/cpp/constexpr`：常量表达式上下文、C++11→26 演进、同一函数双执行、consteval、constinit、`is_constant_evaluated`、编译期 FNV-1a 哈希、编译期成本与限制。`example.cpp` 八实验，实测：`compile=20 runtime=11`、`hash(order)=1932267671`、`hash(trade)=1362521689`。
+  - `knowledge/cpp/lambdas`：闭包类生成、捕获方式语义、初始化捕获、泛型 lambda、闭包大小、`this` vs `*this`、`std::function` 类型擦除、生命周期陷阱。`example.cpp` 九实验，实测：`by_value=3 by_ref=12`、`sizeof([a,b])=8`/`sizeof([&a,&b])=16`、`by_this=101 by_copy=1`、`sizeof(std::function)=32`。
+  - `knowledge/cpp/allocators`：allocator 模型与 traits、pmr 三种资源、固定容量对象池、placement new 与显式析构、over-aligned 类型、热路径分配策略、常见坑。`example.cpp` 五实验，实测：`push_back(100)` 8 次分配 vs `reserve(100)` 1 次、pmr 的 vector/string 均落在 4096 字节栈缓冲区（libc++ 从尾部向前分配，off=3696/3488）、对象池地址间距 32 字节且可复用、`alignas(64)` 地址 `%64=0`。
+  - 七个 example 均用 `clang++ -std=c++20 -O2 -Wall` 编译运行通过，无警告。
+
+### 更新
+
+- `knowledge/cpp/README.md`：7 个知识点状态 planned → expanded，目录列改为链接。
+- `knowledge/README.md`：cpp 模块进度 4/11 → 11/11；学习进度表新增 7 行（均 expanded，L2，2026-11-09）。
+- 根 `README.md`：cpp 已展开计数更新为 11 并列出全部知识点。
+
 ## \[0.15.0] - 2026-11-05
 
 ### 新增
