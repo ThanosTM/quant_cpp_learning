@@ -30,7 +30,7 @@
 | [templates-crtp 模板进阶：SFINAE→concepts、CRTP](cpp/templates-crtp/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
 | [constexpr 编译期计算](cpp/constexpr/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
 | [lambdas lambda 捕获与闭包](cpp/lambdas/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
-| [allocators 分配器与内存池](cpp/allocators/README.md) | cpp | expanded | L2 | 0 | 2026-11-09 |
+| [allocators 分配器与内存池](cpp/allocators/README.md) | cpp | expanded | L2 | 1 | 2026-11-12 |
 | [modern-cpp 现代 C++ 版本演进（14/17/20/23/26）](cpp/modern-cpp/README.md) | cpp | expanded | L2 | 0 | 2026-11-04 |
 | [false-sharing 伪共享](low-latency/false-sharing/README.md) | low-latency | expanded | L2 | 2 | 2026-09-02 |
 | [context-switch-affinity 上下文切换、调度与 CPU 亲和性](os/context-switch-affinity/README.md) | os | expanded | L2 | 2 | 2026-11-03 |

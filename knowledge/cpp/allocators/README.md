@@ -1,6 +1,6 @@
 # 分配器与内存池
 
-> 模块: cpp ｜ 状态: expanded ｜ 深度: L2 ｜ 创建: 2026-11-09 ｜ 更新: 2026-11-09
+> 模块: cpp ｜ 状态: expanded ｜ 深度: L2 ｜ 创建: 2026-11-09 ｜ 更新: 2026-11-12
 > 依据: [research/03](../../../research/03-tech-stack-map.md)（P1「分配器 / 内存池 / placement new」，HFT 题库 Q20；与 [low-latency](../../low-latency/README.md) 交叉）
 
 ## 1. 一句话定位
@@ -70,33 +70,128 @@ struct Alloc {
 
 ### 4.3 `std::pmr`：运行期多态内存资源
 
-`std::pmr::memory_resource` 是抽象基类：
+#### 4.3.1 为什么需要 pmr：模板分配器的两个硬伤
+
+传统 allocator 是**容器类型的一部分**：
+
+```cpp
+std::vector<int, CountingAllocator<int>> a;
+std::vector<int, PoolAllocator<int>>     b;
+// a 与 b 是不同类型：不能互相赋值、不能放进同一个接口、不能运行期切换策略
+```
+
+这带来两个工程问题：
+
+1. **类型爆炸**：每换一种分配策略就换一种容器类型，API 无法统一。
+2. **策略编译期固定**：同一份业务代码无法「测试用计数分配器、生产用内存池」。
+
+pmr（polymorphic memory resource）的解法：容器类型固定为 `std::pmr::vector<T>`，它等价于 `std::vector<T, std::pmr::polymorphic_allocator<T>>`；真正的分配策略由运行期的 `memory_resource*` 对象决定。
+
+代价是容器多存一个指针。本机实测：`sizeof(std::vector<int>)` 为 **24**，`std::pmr::vector<int>` 为 **32**；`std::string` 同样 24 → 32。
+
+#### 4.3.2 `memory_resource` 接口：NVI 模式
 
 ```cpp
 class memory_resource {
+public:
+    void* allocate(std::size_t bytes, std::size_t alignment = alignof(std::max_align_t));
+    void deallocate(void* p, std::size_t bytes, std::size_t alignment = alignof(std::max_align_t));
+    bool is_equal(const memory_resource& other) const noexcept;
+
+protected:
     virtual void* do_allocate(std::size_t bytes, std::size_t alignment) = 0;
     virtual void do_deallocate(void* p, std::size_t bytes, std::size_t alignment) = 0;
-    virtual bool do_is_equal(const memory_resource&) const noexcept = 0;
+    virtual bool do_is_equal(const memory_resource& other) const noexcept = 0;
 };
 ```
 
-三种标准资源：
+- 公开函数是非虚的，虚函数是 `do_*`（NVI，Non-Virtual Interface）：基类可统一做检查/统计，派生类只实现策略。
 
-| 资源 | 行为 | 适用 |
-|---|---|---|
-| `monotonic_buffer_resource` | 只增不减，整块释放；单对象释放是 no-op | 请求/帧级短生命周期批量分配 |
-| `unsynchronized_pool_resource` | 按大小分级池化，非线程安全 | 单线程、频繁小块分配 |
-| `synchronized_pool_resource` | 线程安全版本（内部加锁） | 多线程共享，但热路径仍有锁成本 |
+- `allocate` 与 `deallocate` 必须传**相同的 bytes 与 alignment**，否则是 UB；这也是 pmr 不能像 `free` 那样只传指针的原因。
 
-用法：
+- `is_equal` 决定两块内存能否互换释放；`polymorphic_allocator::operator==` 就是比较 `resource()->is_equal(other.resource())`。
+
+#### 4.3.3 `polymorphic_allocator` 的传播规则（最容易踩的坑）
+
+```cpp
+template <class T>
+class polymorphic_allocator {
+    std::pmr::memory_resource* resource_;
+public:
+    using propagate_on_container_copy_assignment = std::false_type;
+    using propagate_on_container_move_assignment = std::false_type;
+    using propagate_on_container_swap            = std::false_type;
+
+    polymorphic_allocator select_on_container_copy_construction() const {
+        return polymorphic_allocator();   // 默认资源
+    }
+};
+```
+
+三条结论：
+
+1. **拷贝构造不继承源资源**：`select_on_container_copy_construction()` 返回默认资源，副本会走默认堆。本机实测：`copy.get_allocator().resource() == &resource` 为 **0**，`== get_default_resource()` 为 **1**，副本数据不在栈缓冲区。
+
+2. **赋值/swap 都不传播资源**：资源不同时，移动赋值退化为**逐元素移动**（可能重新分配），swap 不同资源是 **UB**。本机实测：跨 `monotonic` 资源移动赋值后，`a` 没有接管 `b` 的缓冲区（`a.data() == b_buffer` 为 0），且 `a` 仍使用原资源。
+
+3. **容器类型相同 ≠ 资源相同**：两个 `std::pmr::vector<int>` 可以指向不同 resource，因此「同类型」不能推出「可直接 swap」。
+
+工程规则：
+
+- 希望拷贝也走同一池 → 显式构造并传 allocator：`std::pmr::vector<int> copy(v, &resource);`，不要依赖拷贝构造。
+
+- 跨资源交换禁止；跨资源移动赋值有 O(n) 成本，热路径避免。
+
+- 把 pmr 容器传进函数时，资源不会随容器「自动带过去」；接口要么显式接收 `memory_resource*`，要么约定同一资源域。
+
+#### 4.3.4 标准资源一览
+
+| 资源 | 行为 | 线程安全 | 适用 |
+|---|---|---|---|
+| `monotonic_buffer_resource` | 只增不减；单对象 `deallocate` 是 no-op；`release()` 整体回收 | 否 | 请求/帧级短生命周期批量分配 |
+| `unsynchronized_pool_resource` | 按大小分级池化，释放的块回收到 free list 复用 | 否 | 单线程频繁小块分配 |
+| `synchronized_pool_resource` | 同上的线程安全版本（内部加锁） | 是 | 多线程共享；热路径仍有锁成本 |
+| `null_memory_resource()` | 任何分配都抛 `bad_alloc` | 是 | 测试「热路径零分配」 |
+| `get_default_resource()` / `set_default_resource()` | 进程级默认资源，默认是 `new_delete_resource()` | 是（原子） | 全局默认策略 |
+
+`pool_options` 可调 `max_blocks_per_chunk` 与 `largest_required_pool_block`：超过阈值的分配直接走 upstream，不进池。
+
+本机实测：
+
+- `monotonic`：`vector` 数据在 4096 字节栈缓冲区内，偏移 **4084**（libc++ 从尾部向前分配；GCC 可能从头分配，不要依赖方向）。
+
+- `unsynchronized_pool_resource`：`allocate(64,8)` → `deallocate` → 再 `allocate(64,8)` 返回**同一地址**（复用）。
+
+- `null_memory_resource`：`pmr::vector` 首次 `push_back` 抛 `bad_alloc`。
+
+#### 4.3.5 嵌套容器：`uses_allocator` 自动传播
 
 ```cpp
 std::array<std::byte, 4096> buffer{};
 std::pmr::monotonic_buffer_resource resource{buffer.data(), buffer.size()};
-std::pmr::vector<int> v{&resource};      // 内存来自 buffer
+
+std::pmr::vector<std::pmr::string> nested{&resource};
+nested.emplace_back(200, 'x');   // string 自动使用同一 resource
 ```
 
-本机实验 2 实测（libc++）：`vector` 数据偏移 3696、`pmr::string` 偏移 3488，都在 4096 字节栈缓冲区内部；libc++ 的 monotonic 资源**从缓冲区尾部向前分配**，GCC 可能从头分配——不要依赖方向。
+- `polymorphic_allocator::construct` 按 `std::uses_allocator` 协议，把 resource 通过 `allocator_arg` 或尾部 allocator 参数传给元素构造函数。
+
+- 本机实测：200 字符的 `pmr::string` 数据落在栈缓冲区内，偏移 **3840**，没有走堆。
+
+- 注意传播只在「用 allocator 构造」时发生：元素若是普通 `std::string` 不会传播；`push_back(std::pmr::string(...))` 传入临时对象时，临时对象用的是它自己构造时的资源。
+
+#### 4.3.6 生命周期与常见坑
+
+| 坑 | 说明 |
+|---|---|
+| 资源生命周期短于容器 | 容器析构时还要 `deallocate`，资源必须先于容器存活；通常把 resource 声明在容器之前 |
+| monotonic 单对象释放无效 | `deallocate` 是 no-op，容器析构不回收内存，只有 resource 析构/`release()` 才整体释放 |
+| pool 的 size/alignment 必须匹配 | `deallocate` 传错大小是对齐/链表损坏风险 |
+| `unsynchronized_pool_resource` 多线程使用 | 数据竞争；多线程用 `synchronized_pool_resource` 或每线程一个池 |
+| 拷贝构造走默认堆 | 见 §4.3.3；大对象拷贝会意外产生堆分配 |
+| 跨资源 swap | UB；跨资源 move assign 是逐元素移动 |
+| 栈缓冲区不够大 | 超出后自动向 upstream（通常是堆）要内存，退化为普通分配 |
+| 与普通容器混用 | `std::pmr::vector<int>` 与 `std::vector<int>` 是不同类型，不能直接赋值 |
 
 ### 4.4 对象池：固定大小 + free list
 
@@ -175,10 +270,11 @@ obj->~CacheLineAligned();                          // 必须显式析构
 ## 5. Example 说明
 
 ```bash
-clang++ -std=c++20 -O2 -Wall example.cpp -o example && ./example
+clang++ -std=c++20 -O2 -Wall example.cpp     -o example     && ./example
+clang++ -std=c++20 -O2 -Wall example-pmr.cpp -o example-pmr && ./example-pmr
 ```
 
-本机实测输出：
+`example.cpp` 本机实测输出：
 
 ```text
 === 1. 自定义分配器统计 ===
@@ -198,6 +294,31 @@ placement new: value=42 地址%64=0
 make_unique<alignas(64)>: 地址%64=0
 ```
 
+`example-pmr.cpp`（pmr 专项）本机实测输出：
+
+```text
+=== 1. pmr 容器的额外开销 ===
+sizeof(std::vector<int>)=24  sizeof(std::pmr::vector<int>)=32
+sizeof(std::string)=24      sizeof(std::pmr::string)=32
+
+=== 2. monotonic_buffer_resource 从栈缓冲区分配 ===
+v.data() 在缓冲区内=1 off=4084
+
+=== 3. 拷贝构造不继承源资源 ===
+copy 资源==&resource=0  copy 资源==默认资源=1
+copy.data() 在缓冲区内=0（拷贝走默认堆）
+
+=== 4. 跨资源移动赋值：逐元素移动，不接管缓冲区 ===
+a 接管了 b 的缓冲区=0（0 = 逐元素移动）  a[0]=9  a 资源仍是 resource=1
+
+=== 5. 嵌套 pmr 容器：uses_allocator 自动传播 ===
+nested[0] 数据在缓冲区内=1 off=3840
+
+=== 6. pool 资源复用与 null_memory_resource ===
+pool 释放后复用同一块=1
+null_memory_resource 拋 bad_alloc=1
+```
+
 观察点：
 
 - 分配次数 8 vs 1：`reserve` 是热路径最便宜的优化。
@@ -206,6 +327,8 @@ make_unique<alignas(64)>: 地址%64=0
 
 - 对象池地址间距等于 `sizeof(Order)`，释放后立即复用。
 
+- `example-pmr` 的 6 个实验分别验证：pmr 容器的指针开销、monotonic 栈分配、拷贝构造不继承资源、跨资源移动不接管缓冲区、嵌套容器自动传播、pool 复用与 null 资源抛异常。
+
 ## 6. 高频面试问答
 
 | 问题 | 30 秒速答 |
@@ -213,6 +336,10 @@ make_unique<alignas(64)>: 地址%64=0
 | allocator 的作用？ | 把容器的内存来源抽象成 allocate/deallocate 策略，容器通过 allocator_traits 使用 |
 | 为什么 `map` 的分配器类型和 `pair` 不同？ | 红黑树分配的是节点（含指针/颜色），用 `rebind` 转换 |
 | `pmr` 是什么？ | C++17 多态内存资源；`memory_resource` 虚接口 + 三种标准资源 |
+| `pmr` 容器为什么比普通容器大？ | 多存一个 `memory_resource*`；本机 `vector`/`string` 均 24 → 32 字节 |
+| 拷贝 pmr 容器会继承原资源吗？ | 不会；`select_on_container_copy_construction` 返回默认资源，副本走默认堆 |
+| 两个 pmr 容器能直接 swap 吗？ | 资源相同才可以；`propagate_on_container_swap` 为 false，跨资源 swap 是 UB |
+| 跨资源移动赋值会怎样？ | 退化为逐元素移动（可能重新分配），不会接管对方缓冲区 |
 | `monotonic_buffer_resource` 适合什么？ | 短生命周期批量分配、整块释放；单对象释放无效 |
 | pool resource 线程安全吗？ | `unsynchronized_pool_resource` 否，`synchronized_pool_resource` 是（有锁） |
 | placement new 是什么？ | 在已有内存上调用构造函数；不分配内存，必须显式析构 |
@@ -225,10 +352,11 @@ make_unique<alignas(64)>: 地址%64=0
 
 | 日期 | 问题 | 结论摘要 | 联动更新 |
 |---|---|---|---|
+| 2026-11-12 | pmr 的运行时多态怎么实现？资源如何在容器间传播？ | 容器类型固定为 `pmr::vector<T>`（多存一个 `memory_resource*`，24→32 字节），策略由虚接口 `memory_resource` 决定。传播规则：`propagate_on_container_copy_assignment/move_assignment/swap` 全为 false；拷贝构造走 `select_on_container_copy_construction` 返回**默认资源**（不继承源资源）；跨资源移动赋值逐元素移动、跨资源 swap 是 UB；嵌套 pmr 容器通过 `uses_allocator` 自动继承资源 | §4.3 扩写为 4.3.1-4.3.6；§5 新增 `example-pmr.cpp` 六实验；§6 新增 4 条问答 |
 
 ## 8. 参考
 
-- cppreference: [allocator](https://en.cppreference.com/w/cpp/memory/allocator) / [allocator_traits](https://en.cppreference.com/w/cpp/memory/allocator_traits) / [memory_resource](https://en.cppreference.com/w/cpp/memory/memory_resource) / [monotonic_buffer_resource](https://en.cppreference.com/w/cpp/memory/monotonic_buffer_resource)（核实日期 2026-11-09）
+- cppreference: [allocator](https://en.cppreference.com/w/cpp/memory/allocator) / [allocator_traits](https://en.cppreference.com/w/cpp/memory/allocator_traits) / [memory_resource](https://en.cppreference.com/w/cpp/memory/memory_resource) / [polymorphic_allocator](https://en.cppreference.com/w/cpp/memory/polymorphic_allocator) / [monotonic_buffer_resource](https://en.cppreference.com/w/cpp/memory/monotonic_buffer_resource) / [pool_resource](https://en.cppreference.com/w/cpp/memory/unsynchronized_pool_resource)（核实日期 2026-11-12）
 
 - 标准论文：[N3916](https://wg21.link/N3916)（pmr）、[P0035R4](https://wg21.link/P0035R4)（aligned new）
 

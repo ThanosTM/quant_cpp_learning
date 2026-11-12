@@ -2,6 +2,21 @@
 
 格式参照 Keep a Changelog，版本号主观递增；日期格式 `YYYY-MM-DD`。
 
+## \[0.16.1] - 2026-11-12
+
+### 文档
+
+- 深化 `knowledge/cpp/allocators` §4.3「`std::pmr`」为 6 个小节：
+  - §4.3.1 为什么需要 pmr（模板分配器导致类型爆炸、策略无法运行期切换；pmr 容器固定类型 + 资源指针，本机 24→32 字节开销）。
+  - §4.3.2 `memory_resource` 的 NVI 接口（public 非虚 `allocate/deallocate/is_equal` + private 纯虚 `do_*`，bytes/alignment 必须匹配）。
+  - §4.3.3 `polymorphic_allocator` 传播规则（三个 `propagate_on_*` 均为 false；`select_on_container_copy_construction` 返回默认资源；跨资源 move assign 逐元素、swap 为 UB）。
+  - §4.3.4 标准资源一览（monotonic / pool / synchronized pool / null / default，含 `pool_options`）。
+  - §4.3.5 嵌套 pmr 容器通过 `uses_allocator` 自动传播资源。
+  - §4.3.6 生命周期与 8 条常见坑。
+- 新增 `knowledge/cpp/allocators/example-pmr.cpp`（六实验，`clang++ -std=c++20 -O2 -Wall` 编译运行通过，无警告），本机实测：pmr vector/string 32 字节（普通 24）、monotonic 栈分配 off=4084、拷贝构造走默认资源、跨资源移动不接管缓冲区、嵌套 pmr::string 在缓冲区内 off=3840、pool 复用同一块、null 资源抛 `bad_alloc`。
+- `knowledge/cpp/allocators/README.md`：§5 补 `example-pmr.cpp` 与实测输出；§6 新增 4 条 pmr 问答；§7 追加 1 条追问。
+- `knowledge/README.md`：allocators 追问数 0 → 1，更新日期 2026-11-12。
+
 ## \[0.16.0] - 2026-11-09
 
 ### 新增
